@@ -4,8 +4,8 @@
  * @returns {string|undefined} String 
  */
 function resolveURLParams(params){
-    if(params instanceof Map) params = Array.from(map.entries()).map(x=>`&${x[0]}=${x[1]}`).slice(1);
-    if(typeof params === 'object') params = Object.entries(params).map(x=>`&${x[0]}=${x[1]}`).slice(1);
+    if(params instanceof Map) params = Array.from(map.entries()).map(x=>`&${x[0]}=${x[1]}`).join('').slice(1);
+    if(typeof params === 'object') params = Object.entries(params).map(x=>`&${x[0]}=${x[1]}`).join('').slice(1);
     if(typeof params !== 'string' || params.includes('#')) return undefined;
     if(params.startsWith('?')) params = params.slice(1);
     return params;

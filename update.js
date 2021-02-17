@@ -14,7 +14,7 @@ class Updater{
      * @param {string} key A valid key for Hypixel API
      * @param {UpdaterOptions} options Options for the updater
      */
-    constructor(key,options){
+    constructor(key,options={}){
         /**
          * API Key
          * @type {string}
@@ -65,7 +65,7 @@ class Updater{
             params = Utils.resolveURLParams(params);
             // Only case params would technically be undefined is when parser can't parse it
             if(params === undefined) throw new Error('Invalid Params');
-            return await fetch(`${baseUrl}${url}?key=${this.key}${params}`)(r=>r.json());
+            return await fetch(`${baseUrl}${url}?key=${this.key}&${params}`).then(r=>r.json());
         }catch(e){
             if(process.env.ENVIRONMENT === 'testing') console.error(e);
             throw new Error('Hypixel API is currently down, or something went wrong.');
@@ -77,9 +77,9 @@ class Updater{
      * @returns {Object} Information about the Key
      */
     async _checkKey(){
-        const keyInfo = await this._fetchEndpoint('/key');
+        const keyInfo = await this._fetchEndpoint('key');
         if(!keyInfo.success) throw new Error('Invalid Key!');
-        if(keyInfo.record.queriesInPastMin - endpoints.length <= this.minimumLimitLeft) throw new Error('Refusing to use key because the limit will be hit.');
+        if(120 - keyInfo.record.queriesInPastMin - endpoints.length <= this.minimumLimitLeft) throw new Error('Refusing to use key because the limit will be hit.');
         keyInfo.record.key = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
         return keyInfo;
     }
@@ -93,9 +93,9 @@ class Updater{
         //Remove dups
         const updateList = new Set(eps);
         const keyInfo = await this._checkKey();
-        if(updateList.delete('key')) sustainedWrites.push(fs.writeFile('endpoints/key',JSON.stringify(keyInfo)));
+        if(updateList.delete('key')) sustainedWrites.push(fs.writeFile('endpoints/key.json',JSON.stringify(keyInfo)));
         //first create folders if they are not there already
-        const pathToFolders = new Set(eps.filter(x=>x.includes('/')).map(x=>x.split('/').slice(-1)));
+        const pathToFolders = new Set(eps.filter(x=>x.includes('/')).map(x=>x.split('/').slice(0,-1).join('/')));
         pathToFolders.forEach(folder=>{
             sustainedWrites.push(
                 new Promise((resolve,reject)=>{
@@ -117,11 +117,16 @@ class Updater{
         sustainedWrites.splice(0,sustainedWrites.length);
         //then actually start writing
         updateList.forEach((endpoint)=>{
-            sustainedWrites.push(this._fetchEndpoint(endpoint,this.defaultParams)
-                .then(data=>fs.writeFile(`endpoints/${endpoint}`,JSON.stringify(data))))
+            sustainedWrites.push(
+		new Promise((resolve,reject)=>{
+		    this._fetchEndpoint(endpoint,this.defaultParams)
+                    .then(data=>fs.writeFile(`endpoints/${endpoint}.json`,JSON.stringify(data)))
+                    .then(resolve)
+                    .catch(reject)
+		}))
         })
         try{
-            await Promise.all(updateList)
+            await Promise.all(sustainedWrites)
         }catch(e){
             throw new Error('Some endpoints couldn\'t be updated/written.')
         }
@@ -142,7 +147,7 @@ class Updater{
      * @returns {string} Success message
      */
     static async updateConstant(githubUrl,branch,pathToMethods){
-        githubUrl = new URL(githubUrl || 'https://github.com/HypixelDev/PublicAPI').pathname;
+        githubUrl = new URL(githubUrl || 'https://github.com/HypixelDev/PublicAPI').pathname.slice(1);
         branch = branch || 'master'
         pathToMethods = pathToMethods || 'Documentation/methods';
         if(!githubUrl || !pathToMethods) throw new Error('Bad Parameter(s) provided');
@@ -150,11 +155,11 @@ class Updater{
         const structure = await fetch(`https://api.github.com/repos/${githubUrl}/git/trees/${branch}?recursive=1`).then(r=>r.json());
         if(structure.message) console.log(structure.message);
         if(!structure.tree) throw new Error('Invalid tree, message logged in console.')
-        const paths = structure.tree.filter(x=>x.path.startsWith(pathToMethods) && structure.type === 'blob');
+        const paths = structure.tree.filter(x=>x.path.startsWith(pathToMethods) && x.type === 'blob');
         if(!paths.length) throw new Error('No endpoints found');
         // Transform paths into endpoints
-        const regex = new RegExp(`${pathToMethods}/([^.])+.md`);
-        const newEndpoints = paths.map(x=>x.match(regex)[1])
+        const regex = new RegExp(`${pathToMethods}\/([^.]+)\.md`);
+        const newEndpoints = paths.map(x=>x.path.match(regex)[1])
         await fs.writeFile('constants.json',JSON.stringify({
             'endpoints':newEndpoints
         }))
@@ -164,7 +169,7 @@ class Updater{
      * Removes everything in endpoints
      * @returns {string} Success message
      */
-    async removeAll(){
+    static async removeAll(){
         //v12 
         await fs.rmdir('endpoints/',{recursive:true});
         await fs.mkdir('endpoints/');

@@ -9,13 +9,21 @@
     "postinstall": "echo \"Update constants\" && node cli.js updateconstant",
     "freshupdate": "node cli.js reinstall",
     "updateconstant": "node cli.js updateconstant",
-    "partialupdate":"node cli.js updatesome",
-    "server":"node cli.js server"
+    "partialupdate": "node cli.js updatesome",
+    "server": "node cli.js server"
   },
   "keywords": [
     "hypixel",
     "minecraft"
   ],
   "author": "ChiefChippy2",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-google": "^0.14.0"
+  }
 }
