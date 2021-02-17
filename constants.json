@@ -1,0 +1,23 @@
+{
+    "endpoints":[
+        "boosters",
+        "findGuild",
+        "friends",
+        "gameCounts",
+        "guild",
+        "leaderboards",
+        "player",
+        "playerCount",
+        "recentGames",
+        "resources",
+        "skyblock/auction",
+        "skyblock/auctions",
+        "skyblock/auctions_ended",
+        "skyblock/bazaar",
+        "skyblock/news",
+        "skyblock/profile",
+        "skyblock/profiles",
+        "status",
+        "watchdogstats"
+    ]
+}

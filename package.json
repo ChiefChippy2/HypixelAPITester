@@ -1,0 +1,21 @@
+{
+  "name": "hypixel-api-tester",
+  "version": "0.1.0",
+  "description": "Emulates Hypixel API locally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Running Test\" && node test.js ",
+    "update": "echo \"Updating endpoints...\" && node cli.js update",
+    "postinstall": "echo \"Update constants\" && node cli.js updateconstant",
+    "freshupdate": "node cli.js reinstall",
+    "updateconstant": "node cli.js updateconstant",
+    "partialupdate":"node cli.js updatesome",
+    "server":"node cli.js server"
+  },
+  "keywords": [
+    "hypixel",
+    "minecraft"
+  ],
+  "author": "ChiefChippy2",
+  "license": "ISC"
+}
