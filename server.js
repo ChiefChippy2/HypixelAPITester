@@ -12,6 +12,9 @@ class Server {
     this.app = app || express();
     this.app.use('*', redirect);
     this.app.use(express.static('endpoints/'));
+    this.app.get('*',(req,res)=>{
+	    res.send('{"success":false,"cause":"Unknown endpoint"}');
+    })
   }
   listen(...args) {
     return this.app.listen(...args);

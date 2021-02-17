@@ -11,7 +11,6 @@ function err(msg, fatal=true) {
  * Deals with argv and runs the correct functions
  */
 async function processArgv() {
-  console.log(process.argv);
   if (!process.argv[2]) err('No action provided.');
   const action = process.argv[2].toLowerCase();
   if (action === 'updateconstant') return await HypixelAPITester.Updater.updateConstant(...process.argv.slice(3));
@@ -21,11 +20,17 @@ async function processArgv() {
   if (action === 'update') return await Updater.updateAll();
   if (action === 'reinstall') {
     await HypixelAPITester.Updater.removeAll();
-    await HypixelAPITester.Updater.updateConstant(process.argv.slice(4));
+    await HypixelAPITester.Updater.updateConstant(...process.argv.slice(4));
     return await Updater.updateAll(process.argv[3]);
   }
   if (action === 'updatesome') return await Updater.updateEndpoints(process.argv.slice(3));
   err('Unknown Action');
 }
 
-processArgv().then(process.exit.bind(this, 0));
+processArgv().then(result=>{
+console.log(result);
+if(process.argv[2].toLowerCase() !== 'server') process.exit(0)
+}).catch(err=>{
+console.error(err);
+process.exit(1)
+});
