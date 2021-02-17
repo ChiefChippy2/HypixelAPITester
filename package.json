@@ -10,7 +10,8 @@
     "freshupdate": "node cli.js reinstall",
     "updateconstant": "node cli.js updateconstant",
     "partialupdate": "node cli.js updatesome",
-    "server": "node cli.js server"
+    "server": "node cli.js server",
+    "purge":"rm -rf endpoints/ && mkdir endpoints"
   },
   "keywords": [
     "hypixel",
