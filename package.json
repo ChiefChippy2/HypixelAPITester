@@ -11,7 +11,7 @@
     "updateconstant": "node cli.js updateconstant",
     "partialupdate": "node cli.js updatesome",
     "server": "node cli.js server",
-    "purge":"rm -rf endpoints/ && mkdir endpoints"
+    "purge": "rm -rf endpoints/ && mkdir endpoints"
   },
   "keywords": [
     "hypixel",
