@@ -2,6 +2,8 @@ const HypixelAPITester = require('./index');
 
 /**
  * Logs errors and exits program if necessary
+ * @param {string} msg Message to log
+ * @param {boolean} fatal Whether program should exit due to error
  */
 function err(msg, fatal=true) {
   console.error(msg);
@@ -27,10 +29,10 @@ async function processArgv() {
   err('Unknown Action');
 }
 
-processArgv().then(result=>{
-console.log(result);
-if(process.argv[2].toLowerCase() !== 'server') process.exit(0)
-}).catch(err=>{
-console.error(err);
-process.exit(1)
+processArgv().then((result)=>{
+  console.log(result);
+  if (process.argv[2].toLowerCase() !== 'server') process.exit(0);
+}).catch((err)=>{
+  console.error(err);
+  process.exit(1);
 });

@@ -29,7 +29,7 @@ async function test() {
       console.log('Emulating request...');
       const response = await fetch('http://localhost:12345/player').then((r)=>r.text());
       console.timeLog('default', 'Response received... Comparing response');
-      if (fs.readFileSync('endpoints/player.json').toString() !== response) reject('Unexpected response!');
+      if (fs.readFileSync('endpoints/player.json').toString() !== response) reject(new Error('Unexpected response!'));
       console.timeLog('default', 'Request Successful.');
       resolve('Done');
     });
