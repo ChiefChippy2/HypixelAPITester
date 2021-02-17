@@ -20,8 +20,8 @@ async function processArgv() {
   const Updater = new HypixelAPITester.Updater(process.argv[3]);
   if (action === 'update') return await Updater.updateAll();
   if (action === 'reinstall') {
-    await Updater.removeAll();
-    await Updater.updateConstant(process.argv.slice(4));
+    await HypixelAPITester.Updater.removeAll();
+    await HypixelAPITester.Updater.updateConstant(process.argv.slice(4));
     return await Updater.updateAll(process.argv[3]);
   }
   if (action === 'updatesome') return await Updater.updateEndpoints(process.argv.slice(3));
