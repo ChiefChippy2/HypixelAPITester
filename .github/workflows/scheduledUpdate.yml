@@ -23,7 +23,7 @@ jobs:
     - run: echo "Updating..."
     - run: |
            npm install 
-           npm run freshupdate $KEY
+           npm run update $KEY
            git config --global user.email "bot@cc2bots.cf"
            git config --global user.name "AutoUpdateBotFriend"
            git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
