@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Running Test\" && node test.js ",
     "update": "echo \"Updating endpoints...\" && node cli.js update",
-    "postinstall": "echo \"Update constants\" && node cli.js updateconstant",
     "freshupdate": "node cli.js reinstall",
     "updateconstant": "node cli.js updateconstant",
     "partialupdate": "node cli.js updatesome",
