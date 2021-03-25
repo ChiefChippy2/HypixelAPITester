@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const {endpoints} = require('./constants.json');
 const baseUrl = 'https://api.hypixel.net/';
 const Utils = require('./Utils/');
-const fs = require('fs/promises');
+const fs = require('fs').promises;
 
 /**
  * Updater Class
@@ -146,7 +146,7 @@ class Updater {
      * @return {string} Success message
      * @deprecated
      */
-  static async updateConstant(githubUrl, branch, pathToMethods) {
+  static async updateConstantFromGithub(githubUrl, branch, pathToMethods) {
     githubUrl = new URL(githubUrl || 'https://github.com/HypixelDev/PublicAPI').pathname.slice(1);
     branch = branch || 'master';
     pathToMethods = pathToMethods || 'Documentation/methods';
@@ -160,6 +160,22 @@ class Updater {
     // Transform paths into endpoints
     const regex = new RegExp(`${pathToMethods}\/([^.]+)\.md`);
     const newEndpoints = paths.map((x)=>x.path.match(regex)[1]);
+    await fs.writeFile('constants.json', JSON.stringify({
+      'endpoints': newEndpoints,
+    }));
+    return 'Success, new endpoints have been registered!';
+  }
+  /**
+   * Updates constant, unstable
+   * @param {string} [openAPIUrl] URL to the Open API documentations
+   * @return {string} Success message
+   */
+  static async updateConstant(openAPIUrl) {
+    const doc = await fetch(openAPIUrl || 'https://api.hypixel.net').then((r)=>r.text());
+    const scripts = Array.from(doc.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gm)).map((x)=>x[1]);
+    const redoc = scripts.map((element)=>element.match(/const __redoc_state\s?=\s?([^\n]+);/)).find((x)=>x&&x.length);
+    if (!redoc) throw new Error('ReDoc not Found.');
+    const newEndpoints = Array.from(Object.keys(JSON.parse(redoc[1]).spec.data.paths)).map((x)=>x.slice(1));
     await fs.writeFile('constants.json', JSON.stringify({
       'endpoints': newEndpoints,
     }));
