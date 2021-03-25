@@ -2,7 +2,7 @@
 const express = require('express');
 const redirect = new express.Router();
 redirect.use((req, res, next)=>{
-  req.url+='.json';
+  req.url = (req.url+'.json').toLowerCase();
   next();
 });
 /**
