@@ -144,6 +144,7 @@ class Updater {
      * @param {branch} [branch] Branch to use, default master ( not main! )
      * @param {string} [pathToMethods] String Path to methods
      * @return {string} Success message
+     * @deprecated
      */
   static async updateConstant(githubUrl, branch, pathToMethods) {
     githubUrl = new URL(githubUrl || 'https://github.com/HypixelDev/PublicAPI').pathname.slice(1);
