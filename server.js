@@ -16,7 +16,7 @@ class Server {
   constructor(app) {
     this.app = app || express();
     this.app.use('*', redirect);
-    this.app.use(express.static('endpoints/'));
+    this.app.use(express.static(__dirname+'/endpoints/'));
     this.app.get('*', (req, res)=>{
       res.send('{"success":false,"cause":"Unknown endpoint"}');
     });
