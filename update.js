@@ -166,7 +166,7 @@ class Updater {
     return 'Success, new endpoints have been registered!';
   }
   /**
-   * Updates constant, unstable
+   * Updates constant
    * @param {string} [openAPIUrl] URL to the Open API documentations
    * @return {string} Success message
    */
