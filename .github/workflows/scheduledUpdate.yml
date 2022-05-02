@@ -22,7 +22,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: echo "Updating..."
     - run: |
-           npm install 
+           npm install
+           npm run updateconstant
            npm run update $KEY
            git config --global user.email "bot@cc2bots.cf"
            git config --global user.name "AutoUpdateBotFriend"
