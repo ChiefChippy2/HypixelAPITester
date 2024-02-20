@@ -23,6 +23,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.6.11",
     "eslint": "^7.20.0",
     "eslint-config-google": "^0.14.0"
   }

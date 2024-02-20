@@ -26,7 +26,7 @@ class Updater {
     this.minimumLimitLeft = parseInt(options.minimumLimitLeft || 0);
     /**
          * UUID of player to use when fetching endpoints, preferably a player that has stats for about everything
-         * Default Technoblade's
+         * Default Technoblade
          * @type {string}
          */
     this.defaultUUID = options.defaultUUID || 'b876ec32e396476ba1158438d83c67d4';
@@ -87,6 +87,13 @@ class Updater {
      * @return {string} Success message
      */
   async updateEndpoints(eps) {
+    // First backup and clear endpoints folder
+    try {
+      await fs.rename('endpoints/', 'endpoints_old/');
+    } catch (e) {
+      throw new Error('Error occurred whilst trying to make backup for old endpoints cache. Try deleting "endpoints_old" folder.');
+    }
+    await fs.mkdir('endpoints/');
     const sustainedWrites = [];
     // Remove dups
     const updateList = new Set(eps);
@@ -127,6 +134,9 @@ class Updater {
     } catch (e) {
       throw new Error('Some endpoints couldn\'t be updated/written.');
     }
+
+    // All good, remove backup
+    await fs.rm('endpoints_old/', {recursive: true});
     return 'Success, all endpoints updated and written.';
   }
   /**
