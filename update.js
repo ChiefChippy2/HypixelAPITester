@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const {endpoints} = require('./constants.json');
-const baseUrl = 'https://api.hypixel.net/';
+const baseUrl = 'https://api.hypixel.net/v2/';
 const Utils = require('./Utils/');
 const fs = require('fs').promises;
 
@@ -64,7 +64,7 @@ class Updater {
       params = Utils.resolveURLParams(params);
       // Only case params would technically be undefined is when parser can't parse it
       if (params === undefined) throw new Error('Invalid Params');
-      return await fetch(`${baseUrl}${url}?key=${this.key}&${params}`).then((r)=>r.json());
+      return await fetch(`${baseUrl}${url}?${params}`, {headers: {'ApiKey': this.key}}).then((r)=>r.json());
     } catch (e) {
       if (process.env.ENVIRONMENT === 'testing') console.error(e);
       throw new Error('Hypixel API is currently down, or something went wrong.');
@@ -76,7 +76,7 @@ class Updater {
      * @return {Object} Information about the Key
      */
   async _checkKey() {
-    const keyInfo = await this._fetchEndpoint('key');
+    const keyInfo = await this._fetchEndpoint('player', 'uuid=f7c77d999f154a66a87dc4a51ef30d19');
     if (!keyInfo.success) throw new Error('Invalid Key!');
     if (120 - keyInfo.record.queriesInPastMin - endpoints.length <= this.minimumLimitLeft) throw new Error('Refusing to use key because the limit will be hit.');
     keyInfo.record.key = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
