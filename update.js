@@ -64,7 +64,7 @@ class Updater {
       params = Utils.resolveURLParams(params);
       // Only case params would technically be undefined is when parser can't parse it
       if (params === undefined) throw new Error('Invalid Params');
-      return await fetch(`${baseUrl}${url}?${params}`, {headers: {'ApiKey': this.key}}).then((r)=>r.json());
+      return await fetch(`${baseUrl}${url}?${params}`, {headers: {'Api-Key': this.key}}).then((r)=>r.json());
     } catch (e) {
       if (process.env.ENVIRONMENT === 'testing') console.error(e);
       throw new Error('Hypixel API is currently down, or something went wrong.');
@@ -90,7 +90,7 @@ class Updater {
     const sustainedWrites = [];
     // Remove dups
     const updateList = new Set(eps);
-    const keyAuth = await this._checkKey();
+    await this._checkKey();
     // first create folders if they are not there already
     const pathToFolders = new Set(eps.filter((x)=>x.includes('/')).map((x)=>x.split('/').slice(0, -1).join('/')));
     pathToFolders.forEach((folder)=>{
