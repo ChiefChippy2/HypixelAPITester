@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const {endpoints} = require('./constants.json');
-const baseUrl = 'https://api.hypixel.net/v2/';
+const baseUrl = 'https://api.hypixel.net/';
 const Utils = require('./Utils/');
 const fs = require('fs').promises;
 
@@ -77,10 +77,9 @@ class Updater {
      */
   async _checkKey() {
     const keyInfo = await this._fetchEndpoint('player', 'uuid=f7c77d999f154a66a87dc4a51ef30d19');
+    if (process.env.ENVIRONMENT === 'testing' && !keyInfo.success) console.log(keyInfo);
     if (!keyInfo.success) throw new Error('Invalid Key!');
-    if (120 - keyInfo.record.queriesInPastMin - endpoints.length <= this.minimumLimitLeft) throw new Error('Refusing to use key because the limit will be hit.');
-    keyInfo.record.key = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-    return keyInfo;
+    return true;
   }
   /**
      * Updates the provided Endpoints
@@ -91,8 +90,7 @@ class Updater {
     const sustainedWrites = [];
     // Remove dups
     const updateList = new Set(eps);
-    const keyInfo = await this._checkKey();
-    if (updateList.delete('key')) sustainedWrites.push(fs.writeFile('endpoints/key.json', JSON.stringify(keyInfo)));
+    const keyAuth = await this._checkKey();
     // first create folders if they are not there already
     const pathToFolders = new Set(eps.filter((x)=>x.includes('/')).map((x)=>x.split('/').slice(0, -1).join('/')));
     pathToFolders.forEach((folder)=>{
